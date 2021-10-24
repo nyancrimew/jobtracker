@@ -63,8 +63,13 @@ func (jt *JobTracker) AddJobs(jobs ...string) {
 	}
 }
 
-func (jt *JobTracker) StartAndWait(context Context) {
-	numWorkers := int(min32(atomic.LoadInt32(&jt.queuedJobs), jt.maxConcurrency))
+func (jt *JobTracker) StartAndWait(context Context, forceMaxConcurrency bool) {
+	var numWorkers int
+	if forceMaxConcurrency {
+		numWorkers = int(jt.maxConcurrency)
+	} else {
+		numWorkers = int(min32(atomic.LoadInt32(&jt.queuedJobs), jt.maxConcurrency))
+	}
 	for w := 0; w < numWorkers; w++ {
 		go workRoutine(jt, jt.worker, context)
 	}

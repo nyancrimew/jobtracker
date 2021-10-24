@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	jt := jobtracker.NewJobTracker(RecurseWorker, 60, jobtracker.DefaultNapper)
+	jt := jobtracker.NewJobTracker(RecurseWorker, 30, jobtracker.DefaultNapper)
 	files, err := ioutil.ReadDir(".")
 	if err != nil {
 		panic(err)
@@ -22,5 +22,5 @@ func main() {
 		}
 	}
 	abs, _ := filepath.Abs(".")
-	jt.StartAndWait(RecurseContext{BaseDir: abs})
+	jt.StartAndWait(RecurseContext{BaseDir: abs}, true)
 }
